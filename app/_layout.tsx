@@ -1,59 +1,69 @@
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+import { Stack, useRouter } from "expo-router";
+import { useAuth } from "../hooks/useAuth";
+import { useEffect, useState } from "react";
+import { View, ActivityIndicator } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { useColorScheme } from '@/components/useColorScheme';
-
-export {
-  // Catch any errors thrown by the Layout component.
-  ErrorBoundary,
-} from 'expo-router';
-
-export const unstable_settings = {
-  // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: '(tabs)',
-};
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
-
-export default function RootLayout() {
-  const [loaded, error] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-    ...FontAwesome.font,
-  });
-
-  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
-  useEffect(() => {
-    if (error) throw error;
-  }, [error]);
+export default function Layout() {
+  const { user } = useAuth();
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
+    const checkCache = async () => {
+      try {
+        const cachedUser = await AsyncStorage.getItem("userData");
+
+        if (!cachedUser) {
+          console.log("🔄 Aucun utilisateur détecté, suppression du cache...");
+          await AsyncStorage.removeItem("userData");
+        }
+      } catch (error) {
+        console.error("⚠️ Erreur lors du chargement du cache :", error);
+      } finally {
+        setIsLoading(false);
+        setIsReady(true);
+      }
+    };
+
+    checkCache();
+  }, []);
+
+  useEffect(() => {
+    if (isReady) {
+      if (user) {
+        console.log(`✅ Utilisateur connecté : ${user.username}`);
+        router.replace("/");
+      } else {
+        console.log("🔄 Redirection vers Login...");
+        router.replace("/login");
+      }
     }
-  }, [loaded]);
+  }, [user, isReady]);
 
-  if (!loaded) {
-    return null;
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
   }
 
-  return <RootLayoutNav />;
-}
-
-function RootLayoutNav() {
-  const colorScheme = useColorScheme();
-
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-      </Stack>
-    </ThemeProvider>
+    <Stack>
+      {user ? (
+        <>
+          <Stack.Screen name="(tabs)/index" options={{ title: "Accueil" }} />
+          <Stack.Screen name="(tabs)/search" options={{ title: "Rechercher" }} />
+          <Stack.Screen name="(tabs)/profile" options={{ title: "Profil" }} />
+        </>
+      ) : (
+        <>
+          <Stack.Screen name="login" options={{ title: "Connexion" }} />
+          <Stack.Screen name="register" options={{ title: "Inscription" }} />
+        </>
+      )}
+    </Stack>
   );
 }

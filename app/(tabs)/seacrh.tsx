@@ -2,7 +2,6 @@ import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { handleLogout } from "../../controllers/AuthController";
 import { useRouter } from "expo-router";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const HomeScreen = () => {
   const router = useRouter();
@@ -10,11 +9,11 @@ const HomeScreen = () => {
   const onLogout = async () => {
     try {
       await handleLogout();
-      router.replace("/login"); // 🔥 Retour à l'écran de connexion après déconnexion
+      router.replace("/login");
     } catch (error) {
       alert("Erreur lors de la déconnexion !");
     }
-  };  
+  };
 
   return (
     <View style={styles.container}>

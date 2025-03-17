@@ -1,28 +1,22 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { handleLogout } from "../../controllers/AuthController";
-import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { handleLogout } from "../controllers/AuthController";
 
-const HomeScreen = () => {
-  const router = useRouter();
-
+const HomeScreen = ({ navigation }: any) => {
   const onLogout = async () => {
-    try {
-      await handleLogout();
-      router.replace("/login"); // 🔥 Retour à l'écran de connexion après déconnexion
-    } catch (error) {
-      alert("Erreur lors de la déconnexion !");
-    }
-  };  
+    await handleLogout();
+    await AsyncStorage.removeItem("userData"); // Efface l'utilisateur
+    navigation.replace("Login");
+  };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Bienvenue sur Clash of Infos</Text>
-      <TouchableOpacity style={styles.button} onPress={() => router.push("../search")}>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Search")}>
         <Text style={styles.buttonText}>Rechercher un joueur</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={() => router.push("../profile")}>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Profile")}>
         <Text style={styles.buttonText}>Profil</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.logoutButton} onPress={onLogout}>

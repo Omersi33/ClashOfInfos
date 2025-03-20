@@ -3,50 +3,6 @@ import { auth, db } from "../config/firebaseConfig";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 
-export const handleRegister = async (email: string, password: string, username: string, photoBase64: string | null) => {
-  try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
-
-    if (!db) {
-      throw new Error("🔥 Firestore n'est pas initialisé !");
-    }
-
-    const userData = {
-      uid: user.uid,
-      username,
-      email,
-      photoBase64: photoBase64 || null,
-    };
-
-    await setDoc(doc(db, "users", user.uid), userData);
-
-    return userData;
-  } catch (error) {
-    console.error("❌ Erreur d'inscription : ", error);
-    throw error;
-  }
-};
-
-export const handleLogin = async (email: string, password: string) => {
-  try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
-
-    const userDoc = await getDoc(doc(db, "users", user.uid));
-    if (!userDoc.exists()) {
-      throw new Error("Utilisateur introuvable dans Firestore !");
-    }
-
-    const userData = userDoc.data();
-
-    return userData;
-  } catch (error) {
-    console.error("❌ Erreur de connexion :", error);
-    throw error;
-  }
-};
-
 export const handleLogout = async () => {
   try {
     await signOut(auth);
@@ -58,15 +14,38 @@ export const handleLogout = async () => {
 };
 
 
-export const updateUserProfile = async ({ username, photoBase64 }: { username: string; photoBase64: string }) => {
-  if (!auth.currentUser) return;
+export const handleLogin = async (email: string, password: string) => {
+  const { user } = await signInWithEmailAndPassword(auth, email, password)
+  const ref = doc(db, "users", user.uid)
+  const snap = await getDoc(ref)
+  if (!snap.exists()) throw new Error("Utilisateur introuvable.")
+  return { id: snap.id, ...snap.data() }
+}
 
-  const userRef = doc(db, "users", auth.currentUser.uid);
+export const handleRegister = async (
+  email: string,
+  password: string,
+  username: string,
+  photoBase64?: string
+) => {
+  const { user } = await createUserWithEmailAndPassword(auth, email, password)
+  const ref = doc(db, "users", user.uid)
+  const payload = { username, email, photoBase64: photoBase64 || "" }
+  await setDoc(ref, payload)
+  return { id: ref.id, ...payload }
+}
 
-  try {
-    await updateDoc(userRef, { username, photoBase64 });
-  } catch (error) {
-    console.error("Erreur mise à jour :", error);
-    throw error;
-  }
-};
+export const updateUserProfile = async ({
+  username,
+  photoBase64,
+}: {
+  username: string
+  photoBase64: string
+}) => {
+  if (!auth.currentUser) throw new Error("Aucun utilisateur connecté.")
+  const ref = doc(db, "users", auth.currentUser.uid)
+  await updateDoc(ref, { username, photoBase64 })
+  const snap = await getDoc(ref)
+  if (!snap.exists()) throw new Error("Utilisateur introuvable.")
+  return { id: snap.id, ...snap.data() }
+}

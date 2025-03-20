@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { auth, db } from "../config/firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
 
 export const useAuth = () => {
   const [user, setUser] = useState<any>(null);
@@ -28,30 +29,21 @@ export const useAuth = () => {
   }, []);
 
   useEffect(() => {
-    if (isLoaded) {
-      const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
-
-        if (authUser) {
-          const userRef = doc(db, "users", authUser.uid);
-          const userSnap = await getDoc(userRef);
-
-          if (userSnap.exists()) {
-            const userData = userSnap.data();
-            setUser(userData);
-            await AsyncStorage.setItem("userData", JSON.stringify(userData));
-          } else {
-            setUser(null);
-            await AsyncStorage.removeItem("userData");
-          }
+    const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
+      if (authUser) {
+        const ref = doc(db, "users", authUser.uid)
+        const snap = await getDoc(ref)
+        if (snap.exists()) {
+          setUser({ id: snap.id, ...snap.data() })
         } else {
-          setUser(null);
-          await AsyncStorage.removeItem("userData");
+          setUser({ id: authUser.uid, linkedAccounts: [] })
         }
-      });
-
-      return () => unsubscribe();
-    }
-  }, [isLoaded]);
+      } else {
+        setUser(null)
+      }
+    })
+    return unsubscribe
+  }, [])
 
   return { user };
 };

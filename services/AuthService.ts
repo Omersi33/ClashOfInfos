@@ -85,6 +85,9 @@ export const updateUserProfile = async ({
 };
 
 export const updateLinkedAccounts = async (userId: string, linkedAccounts: string[]) => {
-  const userRef = doc(db, "users", userId);
-  await updateDoc(userRef, { linkedAccounts });
-};
+  if (!userId) {
+    throw new Error("userId est vide ou undefined.")
+  }
+  const userRef = doc(db, "users", userId)
+  await updateDoc(userRef, { linkedAccounts })
+}

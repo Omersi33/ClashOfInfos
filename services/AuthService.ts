@@ -1,4 +1,4 @@
-import { auth, db, storage } from "../firebaseConfig";
+import { auth, db, storage } from "../config/firebaseConfig";
 import { EmailAuthProvider, reauthenticateWithCredential, updateEmail } from "firebase/auth";
 import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
@@ -42,7 +42,7 @@ export const updateUserProfile = async ({
   newEmail: string;
   newUsername: string;
   newPhotoBase64: string | null;
-  password: string; // 🔥 On demande le mot de passe pour l'authentification
+  password: string;
 }) => {
   if (!auth.currentUser) {
     throw new Error("Aucun utilisateur connecté !");
@@ -54,37 +54,37 @@ export const updateUserProfile = async ({
 
     const updateData: { username?: string; email?: string; photoBase64?: string } = {};
 
-    // 🔥 Si l'email a changé, on doit réauthentifier l'utilisateur
     if (newEmail && newEmail !== user.email) {
       if (!password) {
         throw new Error("Veuillez entrer votre mot de passe pour changer l'email.");
       }
 
       const credential = EmailAuthProvider.credential(user.email as string, password);
-      await reauthenticateWithCredential(user, credential); // ✅ Réauthentification
+      await reauthenticateWithCredential(user, credential);
 
-      await updateEmail(user, newEmail); // ✅ Mise à jour de l'email dans Firebase Auth
+      await updateEmail(user, newEmail);
       updateData.email = newEmail;
     }
 
-    // 🔥 Mise à jour du pseudo
     if (newUsername) {
       updateData.username = newUsername;
     }
 
-    // 🔥 Mise à jour de la photo
     if (newPhotoBase64) {
       updateData.photoBase64 = newPhotoBase64;
     }
 
-    // 🔥 Mise à jour Firestore
     if (Object.keys(updateData).length > 0) {
       await updateDoc(userDocRef, updateData);
     }
 
-    console.log("✅ Profil mis à jour !");
   } catch (error) {
     console.error("⚠️ Erreur lors de la mise à jour du profil :", error);
     throw error;
   }
+};
+
+export const updateLinkedAccounts = async (userId: string, linkedAccounts: string[]) => {
+  const userRef = doc(db, "users", userId);
+  await updateDoc(userRef, { linkedAccounts });
 };

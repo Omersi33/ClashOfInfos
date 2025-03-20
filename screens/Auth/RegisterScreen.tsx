@@ -38,7 +38,6 @@ const RegisterScreen = ({ navigation }: any) => {
     }
   };
 
-  // 📌 Sélection d'image et conversion en base64
   const handlePickImage = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permissionResult.granted) {
@@ -63,7 +62,6 @@ const RegisterScreen = ({ navigation }: any) => {
     try {
       const newUser = await handleRegister(email, password, username, photoBase64);
 
-      // ✅ Stocker l'utilisateur localement
       await AsyncStorage.setItem("userData", JSON.stringify(newUser));
 
       navigation.replace("Home");
@@ -76,7 +74,6 @@ const RegisterScreen = ({ navigation }: any) => {
     <View style={styles.container}>
       <Text style={styles.title}>Inscription</Text>
 
-      {/* 📌 Sélection de la photo de profil */}
       <TouchableOpacity onPress={pickImage}>
         <Image 
           source={{ uri: photoBase64 || "https://via.placeholder.com/150" }} 

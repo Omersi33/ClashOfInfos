@@ -18,7 +18,6 @@ const AppNavigator = () => {
       try {
         const storedUser = await AsyncStorage.getItem("userData");
         const user = storedUser ? JSON.parse(storedUser) : null;
-        console.log("User récupéré:", user);
         setInitialRoute(user && user.email ? "Home" : "Login");
       } catch (error) {
         console.error("Erreur lors de la récupération du user", error);

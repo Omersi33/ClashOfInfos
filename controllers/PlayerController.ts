@@ -1,6 +1,3 @@
-import { getPlayerInfo } from "../services/PlayerService";
-import { getClanInfo } from "../services/ClanService";
-import { updateUserClan } from "../repositories/UserRepository";
 import { sendLocalNotification } from "../services/NotificationService";
 
 export const fetchPlayerData = async (playerTag: string) => {
@@ -19,7 +16,6 @@ export const fetchPlayerData = async (playerTag: string) => {
 
         const playerData = await response.json();
 
-        // Vérification du changement de trophées (Ajout de la notification)
         const previousTrophies = playerData.previousTrophies ?? playerData.trophies;
         const trophyChange = playerData.trophies - previousTrophies;
 

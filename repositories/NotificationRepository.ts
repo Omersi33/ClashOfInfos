@@ -1,7 +1,6 @@
-import { db } from "../firebaseConfig";
+import { db } from "../config/firebaseConfig";
 import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
 
-// Définition du type des notifications
 interface Notification {
     message: string;
   }
@@ -22,7 +21,6 @@ export const getUserNotifications = async (userId: string): Promise<Notification
       const q = query(collection(db, "notifications"), where("userId", "==", userId));
       const querySnapshot = await getDocs(q);
   
-      // Convertir les documents Firestore en tableau de Notification[]
       const notifications: Notification[] = querySnapshot.docs.map(doc => ({
         message: doc.data().message || "Aucune notification",
       }));
@@ -30,6 +28,6 @@ export const getUserNotifications = async (userId: string): Promise<Notification
       return notifications;
     } catch (error) {
       console.error("Erreur Firebase :", error);
-      return []; // Retourne un tableau vide en cas d’erreur
+      return [];
     }
   };

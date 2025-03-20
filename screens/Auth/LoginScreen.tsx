@@ -11,7 +11,7 @@ const LoginScreen = ({ navigation }: any) => {
 
   const onLogin = async () => {
     try {
-      const user = await handleLogin(email, password); // handleLogin doit retourner un objet User
+      const user = await handleLogin(email, password);
       await AsyncStorage.setItem("userData", JSON.stringify(user));
       navigation.replace("Home");
     } catch (error) {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Button, StyleSheet, Image, TouchableOpacity, Alert } from "react-native";
-import { auth } from "../firebaseConfig";
+import { auth } from "../config/firebaseConfig";
 import * as ImagePicker from "expo-image-picker";
 import Input from "../components/Input";
 import { updateUserProfile, getUserProfile, uploadProfileImage } from "../services/AuthService";
@@ -9,7 +9,7 @@ import { Camera } from "expo-camera";
 const ProfileScreen = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState(""); // 🔥 Ajout du champ mot de passe
+  const [password, setPassword] = useState("");
   const [photoBase64, setPhotoBase64] = useState<string | null>(null);
 
   useEffect(() => {
@@ -57,7 +57,6 @@ const ProfileScreen = () => {
     }
   };
   
-  // Ajoute cette fonction là où l'image était sélectionnée avant
   <TouchableOpacity onPress={pickImage}>
     <Text>Choisir une image</Text>
   </TouchableOpacity>
@@ -89,10 +88,9 @@ const ProfileScreen = () => {
         newEmail: email,
         newUsername: username,
         newPhotoBase64: photoBase64,
-        password, // 🔥 On passe le mot de passe pour la réauthentification
+        password,
       });
 
-      console.log("✅ Profil mis à jour !");
     } catch (error) {
       console.error("⚠️ Erreur lors de la mise à jour du profil :", error);
     }
@@ -117,7 +115,7 @@ const ProfileScreen = () => {
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
-        isDisabled={true} // 🔥 Email modifiable seulement avec `updateUserProfile`
+        isDisabled={true}
       />
       <Input
         placeholder="Mot de passe actuel"

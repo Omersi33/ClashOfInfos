@@ -14,8 +14,8 @@ const LoginScreen = () => {
   const onLogin = async () => {
     try {
       const user = await handleLogin(email, password);
-      await AsyncStorage.setItem("userData", JSON.stringify(user)); // 🔥 Stocke en cache
-      router.replace("/");
+      await AsyncStorage.setItem("userData", JSON.stringify(user));
+      router.replace("/(tabs)/gamer");
     } catch (error) {
       alert((error as Error).message);
     }

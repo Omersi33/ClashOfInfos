@@ -9,7 +9,6 @@ const NotificationScreen = () => {
   useEffect(() => {
     registerForPushNotificationsAsync();
 
-    // Écouteur des notifications reçues
     const subscription = Notifications.addNotificationReceivedListener((notification) => {
       setNotifications((prev) => [...prev, notification.request.content.body || "Notification reçue"]);
     });

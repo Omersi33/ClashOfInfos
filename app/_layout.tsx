@@ -14,9 +14,7 @@ export default function Layout() {
     const checkCache = async () => {
       try {
         const cachedUser = await AsyncStorage.getItem("userData");
-
         if (!cachedUser) {
-          console.log("🔄 Aucun utilisateur détecté, suppression du cache...");
           await AsyncStorage.removeItem("userData");
         }
       } catch (error) {
@@ -26,15 +24,13 @@ export default function Layout() {
         setIsReady(true);
       }
     };
-
     checkCache();
   }, []);
 
   useEffect(() => {
     if (isReady) {
       if (user) {
-        console.log(`✅ Utilisateur connecté : ${user.username}`);
-        router.replace("/");
+        router.replace("/(tabs)/gamer");
       } else {
         console.log("🔄 Redirection vers Login...");
         router.replace("/login");
@@ -50,20 +46,5 @@ export default function Layout() {
     );
   }
 
-  return (
-    <Stack>
-      {user ? (
-        <>
-          <Stack.Screen name="(tabs)/index" options={{ title: "Accueil" }} />
-          <Stack.Screen name="(tabs)/search" options={{ title: "Rechercher" }} />
-          <Stack.Screen name="(tabs)/profile" options={{ title: "Profil" }} />
-        </>
-      ) : (
-        <>
-          <Stack.Screen name="login" options={{ title: "Connexion" }} />
-          <Stack.Screen name="register" options={{ title: "Inscription" }} />
-        </>
-      )}
-    </Stack>
-  );
+  return <Stack screenOptions={{ headerShown: false }} />;
 }

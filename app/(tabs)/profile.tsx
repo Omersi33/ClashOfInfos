@@ -7,6 +7,8 @@ import { updateUserProfile } from "../../controllers/AuthController";
 import * as ImagePicker from "expo-image-picker";
 import { Camera } from "expo-camera";
 import * as ImageManipulator from "expo-image-manipulator";
+import { signOut } from "firebase/auth";
+import { auth } from "@/config/firebaseConfig";
 
 const ProfileScreen = () => {
   const { user } = useAuth();
@@ -25,7 +27,7 @@ const ProfileScreen = () => {
   const resizeImage = async (uri: string) => {
     const manipulatedImage = await ImageManipulator.manipulateAsync(
       uri,
-      [{ resize: { width: 1080 } }], // Redimensionne à 1080p max
+      [{ resize: { width: 1080 } }],
       { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG, base64: true }
     );
     return manipulatedImage.base64;
@@ -66,14 +68,23 @@ const ProfileScreen = () => {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      Alert.alert("Déconnexion", "Vous avez été déconnecté.");
+    } catch (error) {
+      Alert.alert("Erreur", "Échec de la déconnexion.");
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Mon Profil</Text>
       <Image source={{ uri: photoBase64 || "https://via.placeholder.com/150" }} style={styles.avatar} />
       <Button title="Modifier la photo" onPress={pickImage} />
       <Input placeholder="Pseudo" value={username} onChangeText={setUsername} />
       <Input placeholder="Email" value={email} onChangeText={setEmail} editable={false} selectTextOnFocus={false} />
       <Button title="Mettre à jour" onPress={onUpdateProfile} />
+      <Button title="Se déconnecter" onPress={handleLogout} color="red" />
     </View>
   );
 };

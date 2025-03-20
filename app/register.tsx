@@ -19,7 +19,7 @@ const RegisterScreen = () => {
   const resizeImage = async (uri: string) => {
     const manipulatedImage = await ImageManipulator.manipulateAsync(
       uri,
-      [{ resize: { width: 1080 } }], // Redimensionne à 1080p max
+      [{ resize: { width: 1080 } }],
       { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG, base64: true }
     );
     return manipulatedImage.base64;
@@ -54,8 +54,8 @@ const RegisterScreen = () => {
   const onRegister = async () => {
     try {
       const newUser = await handleRegister(email, password, username, photoBase64);
-      await AsyncStorage.setItem("userData", JSON.stringify(newUser)); // 🔥 Stocke en cache
-      router.replace("/");
+      await AsyncStorage.setItem("userData", JSON.stringify(newUser));
+      router.replace("/(tabs)/gamer");
     } catch (error) {
       alert((error as Error).message);
     }

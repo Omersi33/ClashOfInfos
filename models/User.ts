@@ -3,5 +3,5 @@ export interface User {
     email: string;
     username: string;
     photoBase64?: string;
-    linkedAccounts: string[]; // Liste des Player Tags liés
+    linkedAccounts: string[];
   }

@@ -16,7 +16,7 @@ const Input: React.FC<InputProps> = ({
   onChangeText, 
   secureTextEntry = false, 
   isDisabled = false, 
-  selectOnFocus = false, // ✅ Désactivé par défaut
+  selectOnFocus = false,
   keyboardType = "default",
   autoCapitalize = "none",
 }) => {
@@ -30,7 +30,7 @@ const Input: React.FC<InputProps> = ({
         secureTextEntry={secureTextEntry}
         keyboardType={keyboardType}
         autoCapitalize={autoCapitalize}
-        selectTextOnFocus={selectOnFocus} // ✅ Désactive totalement la sélection automatique
+        selectTextOnFocus={selectOnFocus}
         editable={!isDisabled}
       />
     </View>

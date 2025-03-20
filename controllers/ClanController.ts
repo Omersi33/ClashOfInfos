@@ -1,4 +1,3 @@
-import { getClanInfo } from "../services/ClanService";
 import { sendLocalNotification } from "../services/NotificationService";
 
 export const fetchClanData = async (clanTag: string) => {
@@ -17,7 +16,6 @@ export const fetchClanData = async (clanTag: string) => {
 
         const clanData = await response.json();
 
-        // Vérification de la fin d'une guerre de clan (Ajout de la notification)
         if (clanData.warWinStreak !== undefined) {
             const message = clanData.warWinStreak > 0
                 ? "Félicitations ! Votre clan a remporté la guerre ! 🎉"

@@ -16,4 +16,7 @@ export default {
     tabIconDefault: '#ccc',
     tabIconSelected: tintColorDark,
   },
+  text: {
+    fontFamily: "Supercell-Magic",
+  },
 };

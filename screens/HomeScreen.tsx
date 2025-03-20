@@ -6,7 +6,7 @@ import { handleLogout } from "../controllers/AuthController";
 const HomeScreen = ({ navigation }: any) => {
   const onLogout = async () => {
     await handleLogout();
-    await AsyncStorage.removeItem("userData"); // Efface l'utilisateur
+    await AsyncStorage.removeItem("userData");
     navigation.replace("Login");
   };
 

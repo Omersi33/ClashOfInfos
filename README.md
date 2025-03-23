@@ -22,7 +22,7 @@ Cette application a pour but de consulter les informations des joueurs et des cl
 Dans ce fichier se trouve deux *const* dont **API_KEY** qui est vide. Il faut lui donner une clé API de Clash of Clans. Pour ce faire :
 - Visiter le site https://developer.clashofclans.com/#/
 - Créer un compte (rapide)
-- Cliquer sur ***My account***, puis sur *Create New Key*
+- Cliquer sur ***My account***, puis sur ***Create New Key***
 - Remplir les champs ***Key Name*** et ***Description*** puis ajouter sa propre adresse IP.
 - Enfin, appuyer sur ***Create Key*** et récupérer le ***Token***
 - Ajouter ce token dans **API_KEY** du fichier config/apiConfig.ts

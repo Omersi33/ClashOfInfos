@@ -1,5 +1,5 @@
 import { Stack, useRouter } from "expo-router";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "@/hooks/useAuth";
 import { useEffect, useState } from "react";
 import { View, ActivityIndicator } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -17,8 +17,7 @@ export default function Layout() {
         if (!cachedUser) {
           await AsyncStorage.removeItem("userData");
         }
-      } catch (error) {
-        console.error("⚠️ Erreur lors du chargement du cache :", error);
+      } catch {
       } finally {
         setIsLoading(false);
         setIsReady(true);
@@ -32,7 +31,6 @@ export default function Layout() {
       if (user) {
         router.replace("/(tabs)/gamer");
       } else {
-        console.log("🔄 Redirection vers Login...");
         router.replace("/login");
       }
     }

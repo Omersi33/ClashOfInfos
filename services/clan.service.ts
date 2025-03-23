@@ -1,5 +1,5 @@
-import Clan from "@/models/Clan";
 import { BASE_URL, API_KEY } from "@/config/apiConfig";
+import Clan from "@/models/Clan";
 import ClanMember from "@/models/ClanMember";
 
 export const getClanByTag = async (tag: string): Promise<Clan> => {
@@ -8,31 +8,22 @@ export const getClanByTag = async (tag: string): Promise<Clan> => {
     headers: { Authorization: `Bearer ${API_KEY}` },
   });
 
-  if (!response.ok) {
-    throw new Error("Clan introuvable.");
-  }
+  if (!response.ok) throw new Error("Clan introuvable.");
 
   const data = await response.json();
   return new Clan(data);
 };
 
-export const getClanMembers = async (tag: string) => {
+export const getClanMembers = async (tag: string): Promise<ClanMember[]> => {
   const formattedTag = tag.replace("#", "");
   const response = await fetch(`${BASE_URL}/clans/%23${formattedTag}`, {
     headers: { Authorization: `Bearer ${API_KEY}` },
   });
 
-  if (!response.ok) {
-    console.error(`❌ Erreur API ClanMembers :`, await response.text());
-    throw new Error("Impossible de récupérer les membres du clan.");
-  }
+  if (!response.ok) throw new Error("Impossible de récupérer les membres du clan.");
 
   const data = await response.json();
-  
-  if (!data.memberList) {
-    console.error(`❌ Pas de memberList dans la réponse API :`, data);
-    throw new Error("Aucun membre trouvé.");
-  }
+  if (!data.memberList) throw new Error("Aucun membre trouvé.");
 
   return data.memberList;
 };

@@ -3,9 +3,9 @@ import { View, Text, StyleSheet, TouchableOpacity, Animated, ActivityIndicator }
 import { Ionicons } from "@expo/vector-icons";
 import Clan from "@/models/Clan";
 import Player from "@/models/Player";
-import { getClanMembers } from "@/services/ClanService";
-import { getPlayerByTag } from "@/services/PlayerService";
-import PlayerCard from "@/components/PlayerCard";
+import { getClanMembers } from "@/services/clan.service";
+import { getPlayerByTag } from "@/services/player.service";
+import PlayerCard from "./PlayerCard";
 import ClanMember from "@/models/ClanMember";
 
 const getRandomColor = () => `hsl(${Math.floor(Math.random() * 360)}, 60%, 70%)`;
@@ -38,7 +38,7 @@ const ClanCard = ({ clan, color }: { clan: Clan; color: string }) => {
           }
         })
       );
-      const validPlayers = players.filter(p => p !== null) as Player[];
+      const validPlayers = players.filter((p: null) => p !== null) as Player[];
       setMemberList(validPlayers);
 
       const generatedColors: { [key: string]: string } = {};
@@ -81,31 +81,20 @@ const ClanCard = ({ clan, color }: { clan: Clan; color: string }) => {
         }}
       >
         <View style={styles.content}>
-          <Text>
-            <Text style={styles.label}>Clantag :</Text> {clan.tag}
-          </Text>
-          <Text>
-            <Text style={styles.label}>Niveau :</Text> {clan.level}
-          </Text>
-          <Text>
-            <Text style={styles.label}>Description :</Text> {clan.description}
-          </Text>
-          <Text>
-            <Text style={styles.label}>Trophées :</Text> {clan.trophies}
-          </Text>
+          <Text><Text style={styles.label}>Clantag :</Text> {clan.tag}</Text>
+          <Text><Text style={styles.label}>Niveau :</Text> {clan.level}</Text>
+          <Text><Text style={styles.label}>Description :</Text> {clan.description}</Text>
+          <Text><Text style={styles.label}>Trophées :</Text> {clan.trophies}</Text>
 
           <TouchableOpacity onPress={toggleMembersOpen} style={styles.memberToggle}>
-            <Text>
-              <Text style={styles.label}>Membres :</Text> {clan.members}/50
-            </Text>
+            <Text><Text style={styles.label}>Membres :</Text> {clan.members}/50</Text>
             <Ionicons name={isMembersOpen ? "chevron-up" : "chevron-down"} size={20} />
           </TouchableOpacity>
 
           {loading && <ActivityIndicator size="large" color="#007AFF" />}
-          {isMembersOpen &&
-            memberList.map((member) => (
-              <PlayerCard key={member.tag} player={member} color={playerColors[member.tag]} hideClan defaultClosed />
-            ))}
+          {isMembersOpen && memberList.map((member) => (
+            <PlayerCard key={member.tag} player={member} color={playerColors[member.tag]} hideClan defaultClosed />
+          ))}
         </View>
       </Animated.View>
     </View>
@@ -113,21 +102,8 @@ const ClanCard = ({ clan, color }: { clan: Clan; color: string }) => {
 };
 
 const styles = StyleSheet.create({
-  card: {
-    borderWidth: 3,
-    borderRadius: 10,
-    marginVertical: 10,
-    width: "100%",
-    alignSelf: "flex-start",
-    backgroundColor: "#f9f9f9",
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-  },
+  card: { borderWidth: 3, borderRadius: 10, marginVertical: 10, width: "100%", backgroundColor: "#f9f9f9" },
+  header: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", padding: 15 },
   name: { fontSize: 18, fontWeight: "bold", color: "white" },
   content: { padding: 15 },
   label: { fontWeight: "bold" },

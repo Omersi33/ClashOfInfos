@@ -4,4 +4,4 @@ export default class ClanMember {
     constructor(data: any) {
       this.tag = data.tag;
     }
-  }  
+  }

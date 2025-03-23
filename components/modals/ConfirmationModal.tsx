@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Modal, StyleSheet, TouchableOpacity, Keyboard } from "react-native";
+import { View, Text, Modal, StyleSheet, TouchableOpacity } from "react-native";
 
 interface ConfirmationModalProps {
   visible: boolean;

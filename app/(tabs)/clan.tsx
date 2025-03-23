@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { View, TextInput, Alert, StyleSheet, Text, TouchableOpacity, Keyboard, ScrollView, ActivityIndicator } from "react-native";
-import ClanCard from "@/components/ClanCard";
-import { getClanByTag } from "@/services/ClanService";
-import { getPlayerByTag } from "@/services/PlayerService";
-import { getUserProfile } from "@/services/AuthService";
+import ClanCard from "@/components/cards/ClanCard";
+import { getClanByTag } from "@/services/clan.service";
+import { getPlayerByTag } from "@/services/player.service";
+import { getUserProfile } from "@/services/auth.service";
 import Clan from "@/models/Clan";
 import { auth } from "@/config/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
@@ -25,10 +25,10 @@ const ClanScreen = () => {
       setLoading(false);
       return;
     }
-  
+
     setLoading(true);
     setLinkedClans([]);
-  
+
     try {
       const userData = await getUserProfile(auth.currentUser.uid);
       if (!userData?.linkedAccounts || userData.linkedAccounts.length === 0) {
@@ -37,9 +37,9 @@ const ClanScreen = () => {
         setLoading(false);
         return;
       }
-  
+
       const uniqueClans: { [key: string]: Clan } = {};
-  
+
       for (const playerTag of userData.linkedAccounts) {
         try {
           const playerData = await getPlayerByTag(playerTag);
@@ -47,33 +47,30 @@ const ClanScreen = () => {
             const clanData = await getClanByTag(playerData.clan.tag);
             uniqueClans[playerData.clan.tag] = clanData;
           }
-        } catch (error) {}
+        } catch {}
       }
-  
+
       const validClans = Object.values(uniqueClans);
       setLinkedClans(validClans);
-  
+
       const newColors: { [key: string]: string } = {};
       validClans.forEach(clan => {
         newColors[clan.tag] = getRandomColor();
       });
-  
+
       setLinkedClansColors(newColors);
-    } catch (error) {
+    } catch {
       setLinkedClans([]);
       setLinkedClansColors({});
     }
-  
+
     setLoading(false);
-  };  
+  };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        fetchLinkedClans();
-      } else {
-        setLoading(false);
-      }
+      if (user) fetchLinkedClans();
+      else setLoading(false);
     });
 
     return () => unsubscribe();
@@ -160,59 +157,25 @@ const ClanScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  scrollContainer: {
-    flex: 1,
-    width: "100%",
-  },
-  scrollContent: {
-    alignItems: "center",
-    padding: 20,
-    paddingBottom: 40,
-  },
-
+  scrollContainer: { flex: 1, width: "100%" },
+  scrollContent: { alignItems: "center", padding: 20, paddingBottom: 40 },
   searchContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderColor: "#ccc",
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    width: "80%",
-    marginBottom: 8,
+    flexDirection: "row", alignItems: "center", borderColor: "#ccc", borderWidth: 1,
+    borderRadius: 8, paddingHorizontal: 10, width: "80%", marginBottom: 8,
   },
   hash: { fontSize: 18, fontWeight: "bold", marginRight: 5 },
   input: { flex: 1, height: 50, fontSize: 16 },
-
   topSpacing: { height: 5 },
-
-  buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "80%",
-  },
-
+  buttonContainer: { flexDirection: "row", justifyContent: "space-between", width: "80%" },
   button: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 12,
-    borderRadius: 10,
-    marginHorizontal: 5,
+    flex: 1, alignItems: "center", justifyContent: "center",
+    paddingVertical: 12, borderRadius: 10, marginHorizontal: 5,
   },
-
   myClansButton: { backgroundColor: "#28A745" },
   searchButton: { backgroundColor: "#007AFF" },
-
-  buttonText: {
-    color: "white",
-    fontWeight: "bold",
-    fontSize: 16,
-    textAlign: "center",
-  },
-
+  buttonText: { color: "white", fontWeight: "bold", fontSize: 16, textAlign: "center" },
   cardSpacing: { height: 20 },
   noAccountsText: { color: "#aaa", fontSize: 16, marginTop: 20 },
-
   loader: { marginTop: 20 },
 });
 

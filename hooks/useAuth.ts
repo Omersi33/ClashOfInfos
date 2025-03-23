@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { auth, db } from "../config/firebaseConfig";
+import { auth, db } from "@/config/firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 
@@ -12,38 +12,33 @@ export const useAuth = () => {
     const loadUserFromCache = async () => {
       try {
         const cachedUser = await AsyncStorage.getItem("userData");
-
         if (cachedUser) {
           setUser(JSON.parse(cachedUser));
-        } else {
-          console.log("❌ Aucun utilisateur détecté en cache.");
         }
-      } catch (error) {
-        console.error("⚠️ Erreur de lecture du cache :", error);
-      } finally {
+      } catch (error) {} 
+      finally {
         setIsLoaded(true);
       }
     };
-
     loadUserFromCache();
   }, []);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
       if (authUser) {
-        const ref = doc(db, "users", authUser.uid)
-        const snap = await getDoc(ref)
+        const ref = doc(db, "users", authUser.uid);
+        const snap = await getDoc(ref);
         if (snap.exists()) {
-          setUser({ id: snap.id, ...snap.data() })
+          setUser({ id: snap.id, ...snap.data() });
         } else {
-          setUser({ id: authUser.uid, linkedAccounts: [] })
+          setUser({ id: authUser.uid, linkedAccounts: [] });
         }
       } else {
-        setUser(null)
+        setUser(null);
       }
-    })
-    return unsubscribe
-  }, [])
+    });
+    return unsubscribe;
+  }, []);
 
   return { user };
 };

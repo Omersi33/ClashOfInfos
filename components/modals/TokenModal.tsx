@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, Modal, StyleSheet, TouchableOpacity, Keyboard } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import Input from "@/components/Input";
+import Input from "@/components/common/Input";
 
 interface TokenModalProps {
   visible: boolean;

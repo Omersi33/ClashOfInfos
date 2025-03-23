@@ -1,4 +1,4 @@
-import { db } from "../config/firebaseConfig";
+import { db } from "@/config/firebaseConfig";
 import { doc, updateDoc, getDoc } from "firebase/firestore";
 
 export const updateUserClan = async (playerTag: string, clanTag: string) => {

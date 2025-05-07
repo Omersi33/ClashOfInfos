@@ -68,7 +68,7 @@ const ClanScreen = () => {
   };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user: any) => {
       if (user) fetchLinkedClans();
       else setLoading(false);
     });

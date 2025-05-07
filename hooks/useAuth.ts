@@ -24,7 +24,7 @@ export const useAuth = () => {
   }, []);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (authUser: { uid: string; }) => {
       if (authUser) {
         const ref = doc(db, "users", authUser.uid);
         const snap = await getDoc(ref);

@@ -68,7 +68,7 @@ const GamerScreen = () => {
   };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user: any) => {
       if (user) {
         fetchLinkedAccounts();
       } else {

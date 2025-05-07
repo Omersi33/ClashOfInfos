@@ -37,9 +37,6 @@
     },
     "assetBundlePatterns": [
       "**/*"
-    ],
-    "fonts": {
-      "Supercell-Magic": "./assets/fonts/Supercell-Magic.ttf"
-    }
+    ]
   }
 }

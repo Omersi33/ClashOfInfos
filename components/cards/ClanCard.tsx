@@ -38,7 +38,7 @@ const ClanCard = ({ clan, color }: { clan: Clan; color: string }) => {
           }
         })
       );
-      const validPlayers = players.filter((p: null) => p !== null) as Player[];
+      const validPlayers = players.filter(p => p !== null) as Player[];
       setMemberList(validPlayers);
 
       const generatedColors: { [key: string]: string } = {};
